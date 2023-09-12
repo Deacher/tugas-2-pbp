@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from .models import Product
+from .models import Item
 
 class mainTest(TestCase):
     def test_main_url_is_exist(self):
@@ -11,7 +11,7 @@ class mainTest(TestCase):
         self.assertTemplateUsed(response, 'main.html')
     
     def setUp(self):
-        self.product = Product.objects.create(
+        self.item = Item.objects.create(
             name = "Item test",
             amount = 10,
             description = "Description test",
@@ -21,10 +21,10 @@ class mainTest(TestCase):
         )
 
     def test_product_is_assign(self):
-        product = Product.objects.get(id=self.product.id)
-        self.assertEqual(product.name, "Item test")
-        self.assertEqual(product.amount, 10)
-        self.assertEqual(product.description, "Description test")
-        self.assertEqual(product.power, 10)
-        self.assertEqual(product.mana, 10)
-        self.assertEqual(product.categories, "Category test")
+        item = Item.objects.get(id=self.item.id)
+        self.assertEqual(item.name, "Item test")
+        self.assertEqual(item.amount, 10)
+        self.assertEqual(item.description, "Description test")
+        self.assertEqual(item.power, 10)
+        self.assertEqual(item.mana, 10)
+        self.assertEqual(item.categories, "Category test")
