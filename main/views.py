@@ -12,22 +12,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required(login_url='/login')
-def show_main(request):
-    items = Item.objects.all()
-    items_total = items.count()
-    item = Item.objects.filter(user=request.user)
-    context = {
-        'name': request.user.username,
-        'class': 'PBP B',
-        'app': 'Item Collection',
-        'items': items,
-        'items_total':items_total,
-        'last_login': request.COOKIES['last_login'],
-    }
-
-    return render(request, "main.html", context)
-
 def register(request):
     form = UserCreationForm()
 
@@ -61,6 +45,42 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
+@login_required(login_url='/login')
+def show_main(request):
+    items = Item.objects.filter(user=request.user)
+    if request.method == 'POST':
+        if 'increment' in request.POST:
+            item_id = request.POST.get('increment')
+            item = items.get(id=item_id)
+            item.amount += 1
+            item.save()
+            return HttpResponseRedirect(reverse('main:show_main'))
+        elif 'decrement' in request.POST:
+            item_id = request.POST.get('decrement')
+            item = items.get(id=item_id)
+            if item.amount == 1:
+                item.amount -= 1
+                item.delete()
+            else:
+                item.amount -= 1
+                item.save() 
+            return HttpResponseRedirect(reverse('main:show_main'))
+        elif 'delete' in request.POST:
+            item_id = request.POST.get('delete')
+            item = items.get(id=item_id)
+            item.delete()
+            return HttpResponseRedirect(reverse('main:show_main'))
+    items_total = items.count()
+    context = {
+        'name': request.user.username,
+        'class': 'PBP B',
+        'app': 'Item Collection',
+        'items': items,
+        'items_total':items_total,
+        'last_login': request.COOKIES['last_login'],
+    }
+
+    return render(request, "main.html", context)
 
 def create_item(request):
     form = ItemForm(request.POST or None)

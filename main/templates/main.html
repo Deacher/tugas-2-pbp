@@ -18,7 +18,9 @@
         <th>Categories</th>
         <th>Date Added</th>
     </tr>
+
     <p>Kamu menyimpan {{ items_total }} item pada aplikasi {{ app }}</p>
+
     {% comment %} Berikut cara memperlihatkan data item di bawah baris ini {% endcomment %}
 
     {% for item in items %}
@@ -30,6 +32,20 @@
             <td>{{item.mana}}</td>
             <td>{{item.categories}}</td>
             <td>{{item.date_added}}</td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="increment" value="{{ item.id }}">
+                        Tambahkan satu
+                    </button>
+                    <button type="submit" name="decrement" value="{{ item.id }}">
+                        Kurangkan satu
+                    </button>
+                    <button type="submit" name="delete" value="{{ item.id }}">
+                        Hapuskan satu
+                    </button>
+                </form>
+            </td>
         </tr>
     {% endfor %}
 </table>

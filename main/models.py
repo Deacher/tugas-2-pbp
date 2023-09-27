@@ -10,4 +10,3 @@ class Item(models.Model):
     power = models.IntegerField(default=0)
     mana = models.IntegerField(default=0)
     categories = models.CharField(max_length=255, default="Item")
-    

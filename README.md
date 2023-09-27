@@ -162,3 +162,130 @@ Untuk menunjukkan banyak jumlah item yang sudah ditambahkan pada aplikasi adalah
 <img src="/image/json_postman.png">
 <img src="/image/xmlbyid_postman.png">
 <img src="/image/jsonbyid_postman.png">
+
+# Tugas 4 PBP
+
+## Jawaban untuk soal nomor 4
+
+### **Nomor 1**: Apa itu Django UserCreationForm, dan jelaskan apa kelebihan dan kekurangannya?
+
+Django UserCreationForm digunakan untuk membuat pengguna baru yang dapat menggunakan aplikasi web dengan tiga field, diantaranya username, password1, dan password2 yang merupakan konfirmasi password. Kelebihan yang signifikan dari Django UserCreationForm adalah mudah diimplementasikan dan digunakan. Sedangkan, kekurangan yang dapat ditemui pada Django UserCreationForm adalah kurang fleksibel jika ingin memiliki formulir pendaftaran yang kompleks, karena memiliki field yang terbatas.
+
+### **Nomor 2**: Apa perbedaan antara autentikasi dan otorisasi dalam konteks Django, dan mengapa keduanya penting?
+
+Autentikasi adalah proses untuk memverifikasi siapa usernya. Sedangkan otorisasi adalah proses untuk memverifikasi bahwa user memiliki akses ke sesuatu hal. Autentikasi dan otorisasi adalah dua proses keamanan informasi penting yang digunakan oleh administrator untuk melindungi sistem dan data. Autentikasi mengkonfirmasi identitas pengguna atau layanan, sedangkan otorisasi menetapkan izin akses mereka.
+
+### **Nomor 3**: Apa itu cookies dalam konteks aplikasi web, dan bagaimana Django menggunakan cookies untuk mengelola data sesi pengguna?
+
+Cookies adalah file teks yang berisi sejumlah kecil data yang digunakan untuk mengidentifikasi mesin ketika terhubung ke jaringan. Django mengidentifikasi setiap browser dan sesi yang terkait dengan situs dengan menggunakan cookie yang membawa ID sesi yang unik. Secara default, data sesi yang sebenarnya disimpan di database situs.
+
+### **Nomor 4**: Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai?
+
+Cookie tidak terlalu aman, keamanan mereka tergantung pada bagaimana mereka digunakan dan diatur. Cookie adalah potongan-potongan kecil data yang situs web menyimpan pada perangkat pengguna untuk melacak informasi atau menyimpan data sesi. Jika cookie tidak dilindungi, penjahat cyber dapat mencuri informasi pribadi.
+
+### **Nomor 5**: Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+1. Mengimplementasikan fungsi registrasi, login, dan logout untuk memungkinkan pengguna untuk mengakses aplikasi sebelumnya dengan lancar.
+    - Pada `views.py`di folder `main`, import `redirect`, `UserCreationForm`, dan `messages`, lalu membuat fungsi dengan nama `register` dengan kode berikut:
+    ```
+    def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+    ```
+    Setelah membuat fungsi register, buat file `register.html` pada template di main untuk mendapatkan data register di web. Kemudian lakukan routing di `urls.py` dengan `path('register/', register, name='register'),`.
+    - Pada `views.py` di folder `main`, import `authenticate` dan `login`, lalu membuat fungsi dengan nama `login_user` dengan kode berikut:
+    ```
+    def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('main:show_main')
+        else:
+            messages.info(request, 'Sorry, incorrect username or password. Please try again.')
+    context = {}
+    return render(request, 'login.html', context)
+    ```
+    Setelah membuat fungsi login_user, buat file `login.html` pada template di main untuk mendapatkan data login di web. Kemudian lakukan routing di `urls.py` dengan `path('login/', login_user, name='login'),`.
+    - Pada `views.py` di folder `main`, import `logout`, lalu membuat fungsi dengan nama `logout_user` dengan kode berikut:
+    ```
+    def logout_user(request):
+    logout(request)
+    return redirect('main:login')
+    ```
+    Setelah membuat fungsi logout_user, Tambahkan potongan kode di bawah ini pada `main.html` di template main untuk menambahkan button di web. 
+    ```
+    <a href="{% url 'main:logout' %}">
+    <button>
+        Logout
+    </button>
+    </a>
+    ```
+    Kemudian lakukan routing di `urls.py` dengan `path('logout/', logout_user, name='logout'),`.
+    - Menambahkan kode dibawah ini di atas fungsi `show_main` agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi).
+    ```
+    @login_required(login_url='/login')
+    def show_main(request):
+    ```
+2. Membuat dua akun pengguna dengan masing-masing tiga dummy data menggunakan model yang telah dibuat pada aplikasi sebelumnya untuk setiap akun di lokal.
+<img src="/image/akun_1.png">
+<img src="/image/akun_2.png">
+
+3. Menghubungkan model Item dengan User.
+    - Dalam `models.py` import user, kemudian tambahkan `user = models.ForeignKey(User, on_delete=models.CASCADE)` di dalam model Item yang ada. Modifikasi `create-item` untuk menetapkan bidang pengguna ke User object yang terkait dengan pengguna yang saat ini masuk, menunjukkan bahwa item itu milik pengguna tersebut dengan kode berikut:
+    ```
+    def create_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        item = form.save(commit=False)
+        item.user = request.user
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "create_item.html", context)
+    ```
+    Pada fungsi `show_main` tambahkan `'name': request.user.username` untuk mendapatkan username user. Kemudian lakukan migration untuk modelnya.
+
+4. Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi.
+<img src="/image/last_login_1.png">
+<img src="/image/last_login_2.png">
+
+### **BONUS TUGAS 4**
+Untuk bonus, tambahkan kode berikut dibawah ini pada `views.py`:
+```
+if request.method == 'POST':
+    if 'increment' in request.POST:
+        item_id = request.POST.get('increment')
+        item = items.get(id=item_id)
+        item.amount += 1
+        item.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+    elif 'decrement' in request.POST:
+        item_id = request.POST.get('decrement')
+        item = items.get(id=item_id)
+        if item.amount == 1:
+                item.amount -= 1
+                item.delete()
+        else:
+            item.amount -= 1
+            item.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+    elif 'delete' in request.POST:
+        item_id = request.POST.get('delete')
+        item = items.get(id=item_id)
+        item.delete()
+        return HttpResponseRedirect(reverse('main:show_main'))
+```
+Kemudian, menambahkan button untuk masing-masing kegunaan pada `main.html`
