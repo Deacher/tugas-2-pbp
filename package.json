@@ -1,0 +1,23 @@
+{
+  "name": "tugas2",
+  "version": "1.0.0",
+  "description": "1. Membuat sebuah proyek Django baru.\r     - Untuk membuat proyek Django baru, pertama-tama membuat virtual environment pada direktori proyek terlebih dulu.\r     ```\r     python -m venv env\r     ```\r     - Setelah itu, nyalakan virutal environment-nya.\r     ```\r     env\\Scripts\\activate.bat\r     ```\r     - Membuat `requirements.txt` di repositori yang sama yang kemudian menambahkan dependencies yang dibutuhkan.\r     - Menjalankan perintah `pip install -r requirements.txt` untuk meng-install depedencies.\r     - Membuat folder proyek dengan menjalankan command `django-admin startproject item_inventroy .`.\r     - Untuk mengizinkan semua host, menambahkan `\"*\"` di `ALLOWED_HOSTS` pada `settings.py`.\r     - Menambahkan konfigurasi `.gitignore` untuk menetukan direktori yang diabaikan oleh git.",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "build-css": "tailwindcss -i static/src/styles.css -o static/public/out.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deacher/tugas-2-pbp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Deacher/tugas-2-pbp/issues"
+  },
+  "homepage": "https://github.com/Deacher/tugas-2-pbp#readme",
+  "dependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}

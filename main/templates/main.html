@@ -1,69 +1,87 @@
 {% extends 'base.html' %}
 
+{% block meta %}
+<title>Item Collection</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+<style>
+    .nav {
+        position: relative;
+        background-color: rgb(18, 95, 95);
+    }
+    body {
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+    }
+</style>
+{% endblock meta %}
 {% block content %}
-<h1>{{ app }}</h1>
+<body class="font-[Poppins] h-screen" style="background-color: beige;">
+    <header style="background-color: #8b8bae;">
+        <nav class="flex justify-between items-center w-[92%]  mx-auto flex">
+            <div>
+                <strong class="text-xl">{{ app }}</strong><br>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'main:logout' %}"><button class="bg-[#e78f8e] text-black px-5 py-2 rounded-full hover:bg-[#87acec]">Logout</button></a>
+                <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
+            </div>
+    </header>
 
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
-<p>{{ class }}<p>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Amount</th>
-        <th>Description</th>
-        <th>Power</th>
-        <th>Mana</th>
-        <th>Categories</th>
-        <th>Date Added</th>
-    </tr>
 
+    <script>
+        const navLinks = document.querySelector('.nav-links')
+        function onToggleMenu(e){
+            e.name = e.name === 'menu' ? 'close' : 'menu'
+            navLinks.classList.toggle('top-[9%]')
+        }
+    </script>
+</body>
+<div class="text-center">
+    <strong>Welcome, {{ name }} </strong>
     <p>Kamu menyimpan {{ items_total }} item pada aplikasi {{ app }}</p>
-
-    {% comment %} Berikut cara memperlihatkan data item di bawah baris ini {% endcomment %}
-
-    {% for item in items %}
-        <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.amount}}</td>
-            <td>{{item.description}}</td>
-            <td>{{item.power}}</td>
-            <td>{{item.mana}}</td>
-            <td>{{item.categories}}</td>
-            <td>{{item.date_added}}</td>
-            <td>
+</div>
+<div class="card-body">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for item in items %}
+            <div class="{% if forloop.last %}bg-yellow-300{% else %}bg-white{% endif %} p-4 shadow-md rounded-md mb-4">
+                <h2 class="text-xl font-semibold">{{ item.name }}</h2>
+                <p><strong>Amount:</strong> {{ item.amount }}</p>
+                <p><strong>Description:</strong> {{ item.description }}</p>
+                <p><strong>Power:</strong> {{ item.power }}</p>
+                <p><strong>Mana:</strong> {{ item.mana }}</p>
+                <p><strong>Categories:</strong> {{ item.categories }}</p>
+                <p><strong>Date Added:</strong> {{ item.date_added }}</p>
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" name="increment" value="{{ item.id }}">
-                        Tambahkan satu
-                    </button>
-                    <button type="submit" name="decrement" value="{{ item.id }}">
-                        Kurangkan satu
-                    </button>
-                    <button type="submit" name="delete" value="{{ item.id }}">
-                        Hapuskan satu
-                    </button>
+                    <button type="submit" name="increment" value="{{ item.id }}" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
+                    <button type="submit" name="decrement" value="{{ item.id }}" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
+                    <button type="submit" name="delete" value="{{ item.id }}" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
                 </form>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="text-center">
+        <a href="{% url 'main:create_item' %}" class="block mt-4">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mx-auto">Add New Item</button>
+        </a>
+    </div>
+</div>
 
-<h5>Sesi terakhir login: {{ last_login }}</h5>
-
-<br />
-
-<a href="{% url 'main:create_item' %}">
-    <button>
-        Add New Item
-    </button>
-</a>
-
-<a href="{% url 'main:logout' %}">
-    <button>
-        Logout
-    </button>
-</a>
+<div class="text-center">
+    <p>Sesi terakhir login: {{ last_login }}</p>
+</div>
 
 {% endblock content %}

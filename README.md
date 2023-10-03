@@ -289,3 +289,32 @@ if request.method == 'POST':
         return HttpResponseRedirect(reverse('main:show_main'))
 ```
 Kemudian, menambahkan button untuk masing-masing kegunaan pada `main.html`
+
+# Tugas 5 PBP
+
+## Jawaban untuk soal nomor 5
+
+### **Nomor 1**: Jelaskan manfaat dari setiap element selector dan kapan waktu yang tepat untuk menggunakannya.
+1. Element Sector bermanfaat untuk memilih elemen HTML berdasarkan nama tag. Contohnya, untuk memilih semua elemen `<p>` pada halaman web, kita dapat menggunakan kode berikut:
+```$("p")```. Element Selector dapat digunakan ketika kita ingin memilih elemen HTML berdasarkan nama tag.
+2. ID Selector bermanfaat untuk memilih elemen HTML berdasarkan ID. Contohnya, untuk memilih elemen dengan ID `#intro` pada halaman web, kita dapat menggunakan kode berikut:
+```$("#intro")```. ID Selector dapat digunakan ketika kita ingin memilih elemen HTML berdasarkan ID.
+3. Class Selector bermanfaat untuk memilih elemen HTML berdasarkan class. Contohnya, untuk memilih elemen dengan class `.intro` pada halaman web, kita dapat menggunakan kode berikut:
+```$(".intro")```. Class Selector dapat digunakan ketika kita ingin memilih elemen HTML berdasarkan class.
+4. Universal Selector bermanfaat untuk memilih semua elemen HTML pada halaman web. Contohnya, untuk memilih semua elemen pada halaman web, kita dapat menggunakan kode berikut:
+```$("*")```. Universal Selector dapat digunakan ketika kita ingin memilih semua elemen HTML pada halaman web.
+5. Group Selector bermanfaat untuk memilih beberapa elemen HTML. Contohnya, untuk memilih semua elemen `<p>` dan semua elemen dengan class `.intro` pada halaman web, kita dapat menggunakan kode berikut:
+```$("p, .intro")```. Group Selector dapat digunakan ketika kita ingin memilih beberapa elemen HTML.
+
+### **Nomor 2**: Jelaskan HTML5 Tag yang kamu ketahui.
+1. `<header>` Tag untuk mendefinisikan header untuk dokumen atau bagian.
+2. `<nav>` Tag untuk mendefinisikan bagian navigasi.
+3. `<section>` Tag untuk mendefinisikan bagian dalam dokumen.
+4. `<article>` Tag untuk mendefinisikan konten independen.
+5. `<aside>` Tag untuk mendefinisikan konten yang berdiri sendiri.
+
+### **Nomor 3**: Jelaskan perbedaan antara margin dan padding.
+Margin adalah ruang di luar elemen, sedangkan padding adalah ruang di dalam elemen. Margin dan padding dapat digunakan untuk mengatur jarak antara elemen HTML.
+
+### **Nomor 4**: Jelaskan perbedaan antara framework CSS Tailwind dan Bootstrap. Kapan sebaiknya kita menggunakan Bootstrap daripada Tailwind, dan sebaliknya?
+Tailwind CSS adalah framework CSS yang dirancang untuk membangun antarmuka kustom dengan cepat. Tailwind CSS tidak hadir dengan komponen UI yang siap pakai, tetapi menyediakan kelas utilitas yang dapat digunakan untuk membangun antarmuka kustom. Tailwind CSS dapat digunakan ketika kita ingin membangun antarmuka kustom dengan cepat. Sedangkan, Bootstrap adalah framework CSS yang dirancang untuk membangun antarmuka responsif. Bootstrap dengan komponen UI yang siap pakai yang dapat digunakan untuk membangun antarmuka responsif. Bootstrap dapat digunakan ketika kita ingin membangun antarmuka responsif dengan cepat.
