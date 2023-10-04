@@ -318,3 +318,243 @@ Margin adalah ruang di luar elemen, sedangkan padding adalah ruang di dalam elem
 
 ### **Nomor 4**: Jelaskan perbedaan antara framework CSS Tailwind dan Bootstrap. Kapan sebaiknya kita menggunakan Bootstrap daripada Tailwind, dan sebaliknya?
 Tailwind CSS adalah framework CSS yang dirancang untuk membangun antarmuka kustom dengan cepat. Tailwind CSS tidak hadir dengan komponen UI yang siap pakai, tetapi menyediakan kelas utilitas yang dapat digunakan untuk membangun antarmuka kustom. Tailwind CSS dapat digunakan ketika kita ingin membangun antarmuka kustom dengan cepat. Sedangkan, Bootstrap adalah framework CSS yang dirancang untuk membangun antarmuka responsif. Bootstrap dengan komponen UI yang siap pakai yang dapat digunakan untuk membangun antarmuka responsif. Bootstrap dapat digunakan ketika kita ingin membangun antarmuka responsif dengan cepat.
+
+### **Nomor 5**: Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+1. Setting awal tailwind.
+    - Install tailwind dengan perintah `npm install tailwindcss`
+    - Buat file `styles.css` pada folder `static/src` dan tambahkan kode berikut:
+    ```
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    ```
+    - Buat file `out.css` pada folder `static/public` dan tambahkan kode berikut:
+    - Buat file `tailwind.config.js` pada root folder dan tambahkan kode berikut:
+    ```
+    /** @type {import('tailwindcss').Config} */
+    module.exports = {
+    content: ['./item_inventory/**/*.{html,js}', './static/**/*.{html,js}', './templates/**/*.{html,js}', './main/**/*.{html,js}'],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
+    }
+    ```
+    - Pada `package.json` tambahkan kode berikut:
+    ```
+    "scripts": {
+        "build-css": "tailwindcss -i static/src/styles.css -o static/public/out.css"
+    },
+    ```
+    - Jalankan perintah `npm run build-css` untuk mengcompile tailwind.
+    - Jalankan perintah `pip install django-compressor` untuk menginstall django-compressor di virtual environment.
+    - Pada `settings.py` tambahkan kode berikut:
+    ```
+    COMPRESS_ROOT = BASE_DIR / 'static'
+    COMPRESS_ENABLED = True
+    STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+    ```
+    Dan pada variable `INSTALLED_APPS` tambahkan `'compressor'`.
+    - Pada `base.html` tambahkan kode berikut:
+    ```
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'public/out.css' %}" />
+    {% endcompress %}
+    ```
+
+2. Kustomisasi `login.html` dan `register.html`.
+    - Pada `login.html` dan `register.html` tambahkan kode berikut di antara `block meta` dan `endblock meta`:
+    ```
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #52489c;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+    </style>
+    ```
+    - Pada `login.html` tambahkan kode berikut di antara `block content` dan `endblock content`:
+    ```
+    <div class="login-container">
+    <div class="w-full max-w-sm p-4 border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:border-gray-700" style="background-color: #8b8bae;">
+        <form class="space-y-6" method="POST" action="">
+            {% csrf_token %}
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign in</h5>
+            <div>
+                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+                <input type="text" name="username" id="username" placeholder="Username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required>
+            </div>
+            <div>
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
+                <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+            </div>
+            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" style="background-color: #3b51cf;">Login to your account</button>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                Not registered? <a href="{% url 'main:register' %}" class="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
+            </div>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    </div>
+    ```
+    - Pada `register.html` tambahkan kode berikut di antara `block content` dan `endblock content`:
+    ```
+    <div class="login-container">
+    <div class="w-full max-w-sm p-4 border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:border-gray-700" style="background-color: #8b8bae;">
+        <form class="space-y-6" method="POST" action="">
+            {% csrf_token %}
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Sign Up</h5>
+            <div>
+                <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+                <input type="text" name="username" id="username" placeholder="Username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control" required>
+            </div>
+            <div>
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
+                <input type="password" name="password1" id="password1" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control" required>
+            </div>
+            <div>
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+                <input type="password" name="password2" id="password2" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white form-control" required>
+            </div>
+            <button type="submit" value="Daftar" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" style="background-color: #3b51cf;">Create an account</button>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                Already had an account? <a href="{% url 'main:login' %}" class="text-blue-700 hover:underline dark:text-blue-500">Login Here</a>
+            </div>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                {% if messages %}
+                    <ul class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if form.errors.username %}
+                <ul>
+                    <li>{{ form.errors.username }}</li>
+                </ul>
+                {% endif %}        
+                {% if form.errors.password1 %}
+                    <ul>
+                        <li>{{ form.errors.password1 }}</li>
+                    </ul>
+                {% endif %}        
+                {% if form.errors.password2 %}
+                    <ul>
+                        <li>{{ form.errors.password2 }}</li>
+                    </ul>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    </div>
+    ```
+
+3. Kustomisasi `main.html`.
+    - Pada `main.html` tambahkan kode berikut di antara `block meta` dan `endblock meta`:
+    ```
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    <style>
+    .nav {
+        position: relative;
+        background-color: rgb(18, 95, 95);
+    }
+    body {
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+    }
+    </style>
+    ```
+    - Pada `main.html` tambahkan kode berikut di antara `block content` dan `endblock content`:
+    ```
+    <body class="font-[Poppins] h-screen" style="background-color: beige;">
+    <header style="background-color: #8b8bae;">
+        <nav class="flex justify-between items-center w-[92%]  mx-auto flex">
+            <div>
+                <strong class="text-xl">{{ app }}</strong><br>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'main:logout' %}"><button class="bg-[#e78f8e] text-black px-5 py-2 rounded-full hover:bg-[#87acec]">Logout</button></a>
+                <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
+            </div>
+    </header>
+
+
+
+    <script>
+        const navLinks = document.querySelector('.nav-links')
+        function onToggleMenu(e){
+            e.name = e.name === 'menu' ? 'close' : 'menu'
+            navLinks.classList.toggle('top-[9%]')
+        }
+    </script>
+    </body>
+    <div class="text-center">
+        <strong>Welcome, {{ name }} </strong>
+        <p>Kamu menyimpan {{ items_total }} item pada aplikasi {{ app }}</p>
+    </div>
+    <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for item in items %}
+                <div class="{% if forloop.last %}bg-yellow-300{% else %}bg-white{% endif %} p-4 shadow-md rounded-md mb-4">
+                    <h2 class="text-xl font-semibold">{{ item.name }}</h2>
+                    <p><strong>Amount:</strong> {{ item.amount }}</p>
+                    <p><strong>Description:</strong> {{ item.description }}</p>
+                    <p><strong>Power:</strong> {{ item.power }}</p>
+                    <p><strong>Mana:</strong> {{ item.mana }}</p>
+                    <p><strong>Categories:</strong> {{ item.categories }}</p>
+                    <p><strong>Date Added:</strong> {{ item.date_added }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="increment" value="{{ item.id }}" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
+                        <button type="submit" name="decrement" value="{{ item.id }}" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
+                        <button type="submit" name="delete" value="{{ item.id }}" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <a href="{% url 'main:create_item' %}" class="block mt-4">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded mx-auto">Add New Item</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <p>Sesi terakhir login: {{ last_login }}</p>
+    </div>
+    ```
+
+### Bonus Tugas 5
+Untuk bonus, tambahkan kode berikut dibawah ini pada `main.html`:
+```
+<div class="{% if forloop.last %}bg-yellow-300{% else %}bg-white{% endif %} p-4 shadow-md rounded-md mb-4">
+```
+untuk menambahkan warna pada last card item.
