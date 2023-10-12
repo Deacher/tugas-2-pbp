@@ -38,9 +38,6 @@
                 <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
             </div>
     </header>
-
-
-
     <script>
         const navLinks = document.querySelector('.nav-links')
         function onToggleMenu(e){
@@ -51,37 +48,170 @@
 </body>
 <div class="text-center">
     <strong>Welcome, {{ name }} </strong>
-    <p>Kamu menyimpan {{ items_total }} item pada aplikasi {{ app }}</p>
+    <p>Kamu menyimpan <span id="items_total">{{ items_total }}</span> item pada aplikasi {{ app }}</p>
 </div>
 <div class="card-body">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% for item in items %}
-            <div class="{% if forloop.last %}bg-yellow-300{% else %}bg-white{% endif %} p-4 shadow-md rounded-md mb-4">
-                <h2 class="text-xl font-semibold">{{ item.name }}</h2>
-                <p><strong>Amount:</strong> {{ item.amount }}</p>
-                <p><strong>Description:</strong> {{ item.description }}</p>
-                <p><strong>Power:</strong> {{ item.power }}</p>
-                <p><strong>Mana:</strong> {{ item.mana }}</p>
-                <p><strong>Categories:</strong> {{ item.categories }}</p>
-                <p><strong>Date Added:</strong> {{ item.date_added }}</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" name="increment" value="{{ item.id }}" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
-                    <button type="submit" name="decrement" value="{{ item.id }}" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
-                    <button type="submit" name="delete" value="{{ item.id }}" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
-                </form>
-            </div>
-        {% endfor %}
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="card-container" ></div>
     <div class="text-center">
-        <a href="{% url 'main:create_item' %}" class="block mt-4">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded mx-auto">Add New Item</button>
-        </a>
+        <button onclick="showModalContent()" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 px-4 py-2 rounded mx-auto" type="button">
+            Add New Item
+        </button>
     </div>
 </div>
+<!-- Main modal -->
+<div id="content" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-md max-w-2xl w-full opacity-0 transition-opacity duration-500">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Add New Item
+                </h3>
+                <button type="button" onclick="hideContent()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="staticModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <form id="form" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div class="text-base leading-relaxed text-gray-500 dark:text-gray-400 grid grid-cols-1 gap-2">
+                        <div>
+                        <label for="name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="name" name="name"></input>
+                        </div>
+                        <div>
+                        <label for="amount" class="col-form-label">Amount:</label>
+                        <input type="number" class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="amount" name="amount"></input>
+                        </div>
+                        <div>
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="description" name="description"></textarea>
+                        </div>
+                        <div>
+                        <label for="power" class="col-form-label">Power:</label>
+                        <input type="number" class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="power" name="power"></input>
+                        </div>
+                        <div>
+                        <label for="mana" class="col-form-label">Mana:</label>
+                        <input type="number" class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="mana" name="mana"></input>
+                        </div>
+                        <div>
+                        <label for="categories" class="col-form-label">Categories:</label>
+                        <input type="text" class="form-control bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" id="categories" name="categories"></input>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button type="button" id="button_add" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Item</button>
+                <button onclick="hideContent()" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="text-center">
     <p>Sesi terakhir login: {{ last_login }}</p>
 </div>
+
+<script>
+    function showModalContent() {
+        let content = document.getElementById('content');
+        content.classList.remove('hidden');
+        void content.offsetWidth;
+        content.classList.remove('opacity-0');
+    }
+
+    function hideContent() {
+        let content = document.getElementById('content');
+        let inputFields = content.querySelectorAll('input, textarea');
+            inputFields.forEach(field => {
+            field.value = '';
+        });
+        content.classList.add('opacity-0');
+        setTimeout(() => {
+            content.classList.add('hidden');
+        }, 500);
+    }
+
+    async function getItem() {
+        return fetch("{% url 'main:get_item_json' %}").then((res) => res.json());
+    }
+
+    async function refreshItems() {
+        const data = await getItem();
+        document.getElementById("card-container").innerHTML = '';
+        data.forEach(item => {
+            const card = document.createElement("div");
+            card.classList.add("card", "p-4", "shadow-md", "rounded-md", "mb-4", "bg-white");
+            card.innerHTML = `
+                <h2 class="text-xl font-semibold">${item.fields.name}</h2>
+                <p><strong>Amount:</strong> ${item.fields.amount}</p>
+                <p><strong>Description:</strong> ${item.fields.description}</p>
+                <p><strong>Power:</strong> ${item.fields.power}</p>
+                <p><strong>Mana:</strong> ${item.fields.mana}</p>
+                <p><strong>Categories:</strong> ${item.fields.categories}</p>
+                <p><strong>Date Added:</strong> ${item.fields.date_added}</p>
+                <button onclick="increment_item_ajax(${item.pk})" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
+                <button onclick="decrement_item_ajax(${item.pk})" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
+                <button onclick="delete_item_ajax(${item.pk})" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
+            `;
+            document.getElementById("card-container").appendChild(card);
+        });
+        updateItemsTotal(data.length);
+    }
+    
+    function addItem() {
+        fetch("{% url 'main:add_item_ajax' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(refreshItems)
+
+        document.getElementById("form").reset()
+        return false
+    }
+
+    document.getElementById("button_add").onclick = addItem
+    function updateItemsTotal(total) {
+        document.getElementById("items_total").innerText = total;
+    }
+
+    function increment_item_ajax(id) {
+        fetch("/increment-item-ajax/" + id + "/", {
+            method: "POST"
+        }).then(() => {
+            refreshItems();
+        });
+        return false;
+    }
+
+    function decrement_item_ajax(id) {
+        fetch("/decrement-item-ajax/" + id + "/", {
+            method: "POST"
+        }).then(() => {
+            refreshItems();
+        });
+        return false;
+    }
+
+    function delete_item_ajax(id) {
+        fetch("/delete-item-ajax/" + id + "/", {
+            method: "POST"
+        }).then(() => {
+            refreshItems();
+        });
+        return false;
+    }
+
+    refreshItems();
+</script>
+
 
 {% endblock content %}

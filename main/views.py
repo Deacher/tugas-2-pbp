@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def register(request):
@@ -93,6 +94,52 @@ def create_item(request):
 
     context = {'form': form}
     return render(request, "create_item.html", context)
+
+@csrf_exempt
+def add_item_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount = request.POST.get("amount")
+        power = request.POST.get("power")
+        mana = request.POST.get("mana")
+        categories = request.POST.get("categories")
+        description = request.POST.get("description")
+        user = request.user
+
+        new_item = Item(name=name, amount=amount, description=description, power=power, mana=mana, categories=categories ,user=user)
+        new_item.save()
+
+        return HttpResponse(b"CREATED", status=201)
+
+    return HttpResponseNotFound()
+
+@csrf_exempt
+def increment_item_ajax(request, id):
+    item = Item.objects.get(pk=id)
+    item.amount += 1
+    item.save()
+    return HttpResponse(b"DELETED", status=201)
+
+@csrf_exempt
+def decrement_item_ajax(request, id):
+    item = Item.objects.get(pk=id)
+    if item.amount == 1:
+        item.amount -= 1
+        delete_item_ajax(request, id)
+    else:
+        item.amount -= 1
+        item.save()
+    return HttpResponse(b"DELETED", status=201)
+
+@csrf_exempt
+def delete_item_ajax(request, id):
+    item = Item.objects.get(pk=id)
+    item.delete()
+    return HttpResponse(b"DELETED", status=201)
+
+def get_item_json(request):
+    item_item = Item.objects.all()
+    return HttpResponse(serializers.serialize('json', item_item))
 
 def show_xml(request):
     data = Item.objects.all()

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Deacher/tugas-2-pbp#readme",
   "dependencies": {
+    "flowbite": "^1.8.1",
     "tailwindcss": "^3.3.3"
   }
 }
