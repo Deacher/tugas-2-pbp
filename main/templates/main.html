@@ -150,19 +150,36 @@
         document.getElementById("card-container").innerHTML = '';
         data.forEach(item => {
             const card = document.createElement("div");
-            card.classList.add("card", "p-4", "shadow-md", "rounded-md", "mb-4", "bg-white");
-            card.innerHTML = `
-                <h2 class="text-xl font-semibold">${item.fields.name}</h2>
-                <p><strong>Amount:</strong> ${item.fields.amount}</p>
-                <p><strong>Description:</strong> ${item.fields.description}</p>
-                <p><strong>Power:</strong> ${item.fields.power}</p>
-                <p><strong>Mana:</strong> ${item.fields.mana}</p>
-                <p><strong>Categories:</strong> ${item.fields.categories}</p>
-                <p><strong>Date Added:</strong> ${item.fields.date_added}</p>
-                <button onclick="increment_item_ajax(${item.pk})" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
-                <button onclick="decrement_item_ajax(${item.pk})" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
-                <button onclick="delete_item_ajax(${item.pk})" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
-            `;
+            const lastItem = item == data[data.length - 1];
+            if(!lastItem){
+                card.classList.add("card", "p-4", "shadow-md", "rounded-md", "mb-4", "bg-white");
+                card.innerHTML = `
+                    <h2 class="text-xl font-semibold">${item.fields.name}</h2>
+                    <p><strong>Amount:</strong> ${item.fields.amount}</p>
+                    <p><strong>Description:</strong> ${item.fields.description}</p>
+                    <p><strong>Power:</strong> ${item.fields.power}</p>
+                    <p><strong>Mana:</strong> ${item.fields.mana}</p>
+                    <p><strong>Categories:</strong> ${item.fields.categories}</p>
+                    <p><strong>Date Added:</strong> ${item.fields.date_added}</p>
+                    <button onclick="increment_item_ajax(${item.pk})" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
+                    <button onclick="decrement_item_ajax(${item.pk})" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
+                    <button onclick="delete_item_ajax(${item.pk})" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
+                `;
+            } else {
+                card.classList.add("card", "p-4", "shadow-md", "rounded-md", "mb-4", "bg-yellow-300");
+                card.innerHTML = `
+                    <h2 class="text-xl font-semibold">${item.fields.name}</h2>
+                    <p><strong>Amount:</strong> ${item.fields.amount}</p>
+                    <p><strong>Description:</strong> ${item.fields.description}</p>
+                    <p><strong>Power:</strong> ${item.fields.power}</p>
+                    <p><strong>Mana:</strong> ${item.fields.mana}</p>
+                    <p><strong>Categories:</strong> ${item.fields.categories}</p>
+                    <p><strong>Date Added:</strong> ${item.fields.date_added}</p>
+                    <button onclick="increment_item_ajax(${item.pk})" class="bg-green-500 text-white px-2 py-1 rounded" style="background-color: #8b8bae;">+</button>
+                    <button onclick="decrement_item_ajax(${item.pk})" class="bg-yellow-500 text-white px-2 py-1 rounded" style="background-color: #ece2d0;">-</button>
+                    <button onclick="delete_item_ajax(${item.pk})" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
+                `;
+            }
             document.getElementById("card-container").appendChild(card);
         });
         updateItemsTotal(data.length);
