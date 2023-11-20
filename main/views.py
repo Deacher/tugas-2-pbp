@@ -95,6 +95,7 @@ def create_item(request):
     context = {'form': form}
     return render(request, "create_item.html", context)
 
+
 @csrf_exempt
 def add_item_ajax(request):
     if request.method == 'POST':

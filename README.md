@@ -788,3 +788,5 @@ function delete_item_ajax(id) {
 ```
 <button onclick="delete_item_ajax(${item.pk})" class="bg-red-500 text-white px-2 py-1 rounded" style="background-color: #e78f8e;">Delete Item</button>
 ```
+
+push for deploy
